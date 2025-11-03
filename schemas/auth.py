@@ -4,7 +4,6 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
-from schemas import usuarios
 
 # -------------------------------------------------------------------
 # SCHEMAS DE AUTENTICACIÓN Y SEGURIDAD (JWT)
@@ -31,10 +30,7 @@ class Token(BaseModel):
     """Datos que se envían al frontend después de un login exitoso."""
     access_token: str
     token_type: str = "bearer"
-    # Incluye el esquema Usuario ya definido en la respuesta de login
-    usuario: usuarios.Usuario 
+    # Usaremos Any para evitar importación circular - se definirá después
+    usuario: Optional[dict] = None
     roles: List[str] = []       # Lista de nombres de roles para el frontend
     permisos: List[str] = []    # Lista de permisos para el frontend
-    
-# Actualizar las referencias después de definir todas las clases
-Token.model_rebuild()

@@ -49,9 +49,6 @@ def get_user_permissions(db: Session, user_id: uuid.UUID) -> List[str]:
     """
     Consulta todos los códigos de permiso únicos asignados a un usuario 
     a través de los roles que tiene asignados.
-    
-    ASUMIMOS que existen las tablas models.RolPermiso y models.Permiso, 
-    y que models.Permiso tiene una columna 'codigo'.
     """
     # 1. Obtener los IDs de los roles asignados al usuario
     role_ids_query = db.query(models.UsuarioRole.rol_id).filter(
@@ -70,8 +67,6 @@ def get_user_permissions(db: Session, user_id: uuid.UUID) -> List[str]:
     
     # 4. Retornar la lista de códigos de permisos (ej: ["usuario:leer", "cliente:escribir"])
     return [p[0] for p in permissions]
-
-
 
 # -------------------------------------------------------------------
 # LÓGICA DE NEGOCIO DE AUTENTICACIÓN
@@ -132,9 +127,9 @@ async def login_for_access_token(
             data={
                 "sub": user.nombre_usuario, # 'sub' es un estándar de JWT
                 "user_id": str(user.id),
-                "cliente_id": str(user.cliente_id) if user.cliente_id else None,  # cliente_id puede ser None, por lo que lo chequeamos
-                "roles": user_roles, # Añadir los roles al payload del token
-                "permisos": user_permissions # Añadir los permisos al payload del token
+                "cliente_id": str(user.cliente_id) if user.cliente_id else None,
+                "roles": user_roles,
+                "permisos": user_permissions
             }, 
             expires_delta=access_token_expires
         )
